@@ -1,7 +1,7 @@
 {
   "name": "http-api-assignment",
   "version": "1.0.0",
-  "description": "http error hw",
+  "description": "Project1",
   "main": "index.js",
   "scripts": {
     "start": "node ./src/server.js",
@@ -24,7 +24,7 @@
     "eslint-plugin-import": "^2.18.2"
   },
   "bugs": {
-    "url": "https://github.com/sgm4689/http-api-assignment/issues"
+    "url": "https://github.com/sgm4689/RecipeViewer"
   },
-  "homepage": "https://github.com/sgm4689/http-api-assignment#readme"
+  "homepage": "https://github.com/sgm4689/RecipeViewer#readme"
 }
