@@ -27,7 +27,7 @@ const getIndex = (request, response) => {
 
 
 //Gets the CSS
-const getCSS = (request, response, acceptedTypes) => {
+const getCSS = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/css' });
   response.write(css);
   response.end();
@@ -51,7 +51,8 @@ const getRandomRecipe = (request, response) => {
     const keys = Object.keys(recipes);
     const random = Math.floor(Math.random() * keys.length)
     const key = keys[random];
-    const recipe = {key: recipes[keys[random]]};//wrap this in an object literal so the return is consistant with getAllRecipes
+    //wrap this in an object literal so the return is consistant with getAllRecipes
+    const recipe = {key: recipes[keys[random]]};
     respondJSON(request, response, 200, 'application/json', recipe)
    
 }
@@ -93,7 +94,7 @@ const addRecipe = (request, response) =>{
   });
 }
 
-const getMissing = (request, response, acceptedTypes) => {
+const getMissing = (request, response) => {
   const header = {
       id: "notFound",
     message: 'The page you are looking for was not found',

@@ -1,5 +1,4 @@
 const http = require('http');
-const url = require('url'); // pull in the url module
 const responseHandler = require('./responses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
@@ -14,7 +13,7 @@ const onRequest = (request, response) => {
   // Get params
   if (requests.length > 1) {
       //Split on &
-    const params = requestSplit[1].split('&');
+    const params = requests[1].split('&');
 
     for (let i = 0; i < params.length; ++i) {
       const paramSplit = params[i].split('=');
@@ -55,5 +54,3 @@ const onRequest = (request, response) => {
 
 
 http.createServer(onRequest).listen(port);
-
-console.log(`Listening on 127.0.0.1:${port}`);
