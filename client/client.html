@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Our simple HTTP server</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!--^^Bootstrap CSS^^-->
+<link rel="stylesheet" type="text/css" href="/style.css">
+  
+<!--  Bootstrap script tags-->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script>
+
+    //function to handle xhr response
+    const handleResponse = (xhr) => {
+	  //grab the content-type header from the response
+      //This will tell us what the server actually responded with.
+      //Again, the server can ignore our requested types.
+      const type = xhr.getResponseHeader('content-type');
+        const status = xhr.status;
+        const row = document.querySelector(".row");
+        row.innerHTML = "";
+
+        //Switch to handle various statuses
+        switch (status){
+            case 200:
+                header.innerHTML = 'Success';
+                const obj = JSON.parse(xhr.response);
+                const keys = Object.keys(obj)
+                for (let i = 0; i < keys.length; i++){
+                    //creates a new column
+                    const clone = recipeTemplate.content.cloneNode(true);
+                    const resp = clone.querySelector(".col");
+
+                    resp.innerHTML += `Recipe: ${JSON.stringify(obj[keys[i]].Name)}\n`;
+                    resp.innerHTML += "Ingredients: \n<ul>";
+                    obj[keys[i]].Ingredients.forEach(ingredient => resp.innerHTML += `<li> ${ingredient} </li>`);
+                    resp.innerHTML += "</ul>\n"
+                    resp.innerHTML += "Steps: \n<ol>";
+                    obj[keys[i]].Steps.forEach(step => resp.innerHTML += `<li> ${step} </li>`);
+                    resp.innerHTML += "</ol>\n"
+                    
+                    row.appendChild(clone);  //appends column to row
+                }
+                break;
+            case 201:
+                header.innerHTML = 'Create';
+                break;
+            case 204:
+                header.innerHTML = 'Updated (No Content)';
+                break;
+            case 400:
+                header.innerHTML = 'Bad Request';
+                if (xhr.response){
+                    const obj = JSON.parse(xhr.response);
+//                    response.innerHTML = JSON.stringify(obj);
+                }   
+                break;
+            case 404:
+                header.innerHTML = 'Resource not Found';
+                break;
+            case 501:
+                header.innerHTML = 'Not Implemented';
+                if (xhr.response){
+                    const obj = JSON.parse(xhr.response);
+//                    response.innerHTML = JSON.stringify(obj);
+                }
+                break;
+            default:
+                header.innerHTML = 'Unknown Error';//Default case in case some random error gets thrown
+                break;
+        }  
+    };
+    
+    //function to send an xhr request
+    const sendAjax = (request, url, data) => {
+      //create a new xhr (ajax) request. 
+      //Remember that these are ASYNCHRONOUS
+      const xhr = new XMLHttpRequest();
+      //set the xhr to a GET request to a certain URL
+      xhr.open(request, url);
+        if (request === 'GET' || request == 'POST'){
+            xhr.setRequestHeader ("Accept", 'application/json');
+        }
+
+        if (request === 'POST'){
+            xhr.setRequestHeader ("Content-Type", 'application/json');
+            xhr.send(data);
+        }
+        else xhr.send();
+
+      //When the xhr loads, call handleResponse and pass the xhr object
+      xhr.onload = () => handleResponse(xhr);
+    };   
+
+     const init = () => {
+         addButton.onclick = (e) => {
+        e.preventDefault();
+
+        const recipeName = nameField.value;
+        const recipeIngredients = ingredientsField.value;
+        const recipeSteps = stepField.value;
+        
+        sendAjax('POST', '/addRecipe', JSON.stringify({ 'Name': recipeName, 'Ingredients': recipeIngredients, 'Steps': recipeSteps}));
+      };
+      
+     getAllButton.onclick = () => {
+        sendAjax('POST', '/getAllRecipes');
+      };
+         
+     getRandomButton.onclick = () =>{
+         sendAjax('POST', '/getRandomRecipe');
+     }
+     };
+ 
+     window.onload = init;
+
+  </script>
+</head>
+<body>
+  <section id="top">
+    <h3>Recipe Viewer&trade;</h3>
+    <form id="nameForm" method="post">
+      <label for="name">Recipe Name: </label>
+      <input id="nameField" type="text" name="name" />
+      <label for="ingredients">Recipe Ingredients: </label>
+        <textarea id="ingredientsField" name="ingredients" rows="1"></textarea>
+      <label for="steps">Recipe Steps: </label>
+      <textarea id="stepField" name="steps" rows="1"></textarea>
+      <button id="addButton">Add Recipe</button>
+    </form>
+    <button id="getAllButton">Get All Recipes</button>
+    <button id="getRandomButton">Get Random Recipes</button>
+  </section>
+  <h1 id='header' class="text-center"></h1>
+  <div class="container">
+      <div class="row">
+          
+      </div>
+  </div>
+  <template id="recipeTemplate">
+<!-- Template to display content in.  Rn this is just a paragraph tag, will have more info later -->
+          <p class=col></p>
+  </template>
+</body>
+</html>
