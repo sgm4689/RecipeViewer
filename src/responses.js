@@ -50,7 +50,6 @@ const getAllRecipesByTag = (request, response) => {
 const getRandomRecipe = (request, response) => {
     const keys = Object.keys(recipes);
     const random = Math.floor(Math.random() * keys.length)
-    const key = keys[random];
     //wrap this in an object literal so the return is consistant with getAllRecipes
     const recipe = {key: recipes[keys[random]]};
     respondJSON(request, response, 200, 'application/json', recipe)
