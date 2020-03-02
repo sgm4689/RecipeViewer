@@ -72,6 +72,9 @@ const addRecipe = (request, response) =>{
       });
     }
     else if (recipes[recipe.Name]) {//If recipe exists
+        const ingredients = recipe.Ingredients.split("\n");
+        const steps = recipe.Steps.split("\n");
+      recipes[recipe.Name] = { Name: recipe.Name, Ingredients: ingredients, Steps: steps};
       respondJSON(request, response, 204, null, null);
     } else {
         //split steps and ingredients on new lines so the data is easier to format

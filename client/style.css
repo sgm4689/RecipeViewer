@@ -37,6 +37,10 @@ html, body {
     margin-top: 50px;
 }
 
+#header{
+    margin-top: 1%;
+}
+
 .row{
     padding-right: 20px;
     margin-left: 2px;

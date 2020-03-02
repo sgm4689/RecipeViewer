@@ -24,43 +24,34 @@
       const type = xhr.getResponseHeader('content-type');
         const status = xhr.status;
         const row = document.querySelector(".row");
+        const header = document.querySelector("#header");
         row.innerHTML = "";
 
         //Switch to handle various statuses
         switch (status){
             case 200:
-                header.innerHTML = 'Success';
                 const obj = JSON.parse(xhr.response);
                 DisplayContent(obj, row);
                 savedObj = obj;
+                header.innerHTML = "";
                 break;
             case 201:
-                header.innerHTML = 'Create';
                 DisplayContent(savedObj, row);
+                header.innerHTML = "Recipe Successfully Submitted";
                 break;
             case 204:
-                header.innerHTML = 'Updated (No Content)';
                 DisplayContent(savedObj, row);
+                header.innerHTML = "Recipe Successfully Updated";
                 break;
             case 400:
-                header.innerHTML = 'Bad Request';
-                if (xhr.response){
-                    const obj = JSON.parse(xhr.response);
-//                    response.innerHTML = JSON.stringify(obj);
-                }   
+                row.innerHTML = 'Please fill out all fields before submitting';
+                header.innerHTML = "Invalid submission";
                 break;
             case 404:
-                header.innerHTML = 'Resource not Found';
+                row.innerHTML = 'The page you are looking for does not exist';
+                header.innerHTML = "ERROR 404";
                 break;
-            case 501:
-                header.innerHTML = 'Not Implemented';
-                if (xhr.response){
-                    const obj = JSON.parse(xhr.response);
-//                    response.innerHTML = JSON.stringify(obj);
-                }
-                break;
-            default:
-                header.innerHTML = 'Unknown Error';//Default case in case some random error gets thrown
+            default://stop circleci from yelling at me
                 break;
         }  
     };
@@ -106,6 +97,8 @@
      }
      
      autosize(document.querySelectorAll('textArea'));
+         
+         sendAjax('POST', '/getAllRecipes');//gets all content on launch
      };
  
      window.onload = init;
@@ -138,7 +131,6 @@
     <button id="getAllButton">Get All Recipes</button>
     <button id="getRandomButton">Get Random Recipes</button>
   </section>
-  <h1 id='header' class="text-center"></h1>
   <div class="container">
       <div class="row">
           
@@ -159,6 +151,7 @@
     </form>
     </section>
   </section>
+        <h1 id='header' class="text-center"></h1>
   <template id="recipeTemplate">
 <!-- Template to display content in.  Rn this is just a paragraph tag, will have more info later -->
           <p class=col></p>
