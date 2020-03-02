@@ -10,8 +10,12 @@
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  <script>
 
+<!--   And a simple library to resize textareas, because according to google this isn't a feature for some reason-->
+   <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
+    <script>
+
+    let savedObj = {};
     //function to handle xhr response
     const handleResponse = (xhr) => {
 	  //grab the content-type header from the response
@@ -27,28 +31,16 @@
             case 200:
                 header.innerHTML = 'Success';
                 const obj = JSON.parse(xhr.response);
-                const keys = Object.keys(obj)
-                for (let i = 0; i < keys.length; i++){
-                    //creates a new column
-                    const clone = recipeTemplate.content.cloneNode(true);
-                    const resp = clone.querySelector(".col");
-
-                    resp.innerHTML += `Recipe: ${JSON.stringify(obj[keys[i]].Name)}\n`;
-                    resp.innerHTML += "Ingredients: \n<ul>";
-                    obj[keys[i]].Ingredients.forEach(ingredient => resp.innerHTML += `<li> ${ingredient} </li>`);
-                    resp.innerHTML += "</ul>\n"
-                    resp.innerHTML += "Steps: \n<ol>";
-                    obj[keys[i]].Steps.forEach(step => resp.innerHTML += `<li> ${step} </li>`);
-                    resp.innerHTML += "</ol>\n"
-                    
-                    row.appendChild(clone);  //appends column to row
-                }
+                DisplayContent(obj, row);
+                savedObj = obj;
                 break;
             case 201:
                 header.innerHTML = 'Create';
+                DisplayContent(savedObj, row);
                 break;
             case 204:
                 header.innerHTML = 'Updated (No Content)';
+                DisplayContent(savedObj, row);
                 break;
             case 400:
                 header.innerHTML = 'Bad Request';
@@ -112,24 +104,37 @@
      getRandomButton.onclick = () =>{
          sendAjax('POST', '/getRandomRecipe');
      }
+     
+     autosize(document.querySelectorAll('textArea'));
      };
  
      window.onload = init;
+      
+      const DisplayContent = (obj, row) =>{
+          const keys = Object.keys(obj)
+          for (let i = 0; i < keys.length; i++){
+            //creates a new column
+            const clone = recipeTemplate.content.cloneNode(true);
+            const resp = clone.querySelector(".col");
+            let bigString = `${JSON.stringify(obj[keys[i]].Name)}\n`;
+            bigString += "Ingredients: \n<ul>";
+            //Would include an image, don't know how
+            obj[keys[i]].Ingredients.forEach(ingredient => bigString += `<li> ${ingredient} </li>`);
+            bigString += "</ul>\n"
+            bigString += "Steps: \n<ol>";
+            obj[keys[i]].Steps.forEach(step => bigString += `<li> ${step} </li>`);
+            bigString += "</ol>\n"
+            resp.innerHTML = bigString;
+
+            row.appendChild(clone);  //appends column to row
+          }
+      }
 
   </script>
 </head>
 <body>
   <section id="top">
     <h3>Recipe Viewer&trade;</h3>
-    <form id="nameForm" method="post">
-      <label for="name">Recipe Name: </label>
-      <input id="nameField" type="text" name="name" />
-      <label for="ingredients">Recipe Ingredients: </label>
-        <textarea id="ingredientsField" name="ingredients" rows="1"></textarea>
-      <label for="steps">Recipe Steps: </label>
-      <textarea id="stepField" name="steps" rows="1"></textarea>
-      <button id="addButton">Add Recipe</button>
-    </form>
     <button id="getAllButton">Get All Recipes</button>
     <button id="getRandomButton">Get Random Recipes</button>
   </section>
@@ -139,6 +144,21 @@
           
       </div>
   </div>
+  <section id="bottom">
+     <h3>Submit a Recipe:</h3>
+       <button id="addButton">Add Recipe</button>
+       <section class="container">
+     <p>Please provide a name for your recipe, a list of ingredients, and a list of steps that your recipe must follow.</p><p>  Please seperate each unique step and ingredient by pressing enter</p>
+      <form id="nameForm" method="post">
+      <label for="name" class="align">Recipe Name: </label>
+      <input class="align" id="nameField" type="text" name="name" />
+      <label for="ingredients" class="align">Recipe Ingredients: </label>
+        <textarea class="align" id="ingredientsField" name="ingredients" rows="1"></textarea>
+      <label for="steps"class="align" >Recipe Steps: </label>
+      <textarea class="align" id="stepField" name="steps" rows="1"></textarea>
+    </form>
+    </section>
+  </section>
   <template id="recipeTemplate">
 <!-- Template to display content in.  Rn this is just a paragraph tag, will have more info later -->
           <p class=col></p>

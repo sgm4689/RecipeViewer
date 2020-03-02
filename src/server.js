@@ -42,9 +42,6 @@ const onRequest = (request, response) => {
   case '/getAllRecipes':
       responseHandler.getAllRecipes(request, response);
       break;
-  case '/getAllRecipesByTag'://To be implemented after Prototype
-      responseHandler.getAllRecipesByTag(request, response);
-      break;
     // Panic if something goes wrong
     default:
       responseHandler.getMissing(request, response);

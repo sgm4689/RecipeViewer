@@ -4,9 +4,27 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
+  background-color: #FFF5D4;
 }
 
-#top {
+.align{
+    vertical-align: top;
+}
+
+.container {
+    background-color: antiquewhite;
+    width: 60%;
+    margin-top: 2%;
+    /*  60+25+25=100, so this is centered.  Don't question it  */
+    margin-left: 25%;  
+    margin-right: 25%;
+    min-height: 200px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 5px 10px 10px;
+}
+
+#top, #bottom {
   text-align: center;
   margin: 0 auto;
 }
@@ -15,12 +33,24 @@ html, body {
   font-size: 2em;
 }
 
-container {
-  margin-top: 100px;
-  font-size: 2em;
-  text-align: center;
+#bottom{
+    margin-top: 50px;
 }
 
 .row{
     padding-right: 20px;
+    margin-left: 2px;
+    text-align: left;
+}
+
+.col{
+/*    5 columns per row max*/
+    min-width: 19%;
+    max-width: 19%;
+    
+    min-height: 103px;
+    margin-left: 5px;
+    border-bottom-color: black;
+    border-width: 1px;
+    border-style: solid;
 }

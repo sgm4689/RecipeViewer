@@ -38,14 +38,6 @@ const getAllRecipes = (request, response) => {
    
 }
 
-const getAllRecipesByTag = (request, response) => {
-    const header = {
-      id: "notImplemented",
-    message: 'This feature has not been implemented yet',
-  };
-    respondJSON(request, response, 500, 'application/json', header)
-   
-}
 
 const getRandomRecipe = (request, response) => {
     const keys = Object.keys(recipes);
@@ -83,8 +75,8 @@ const addRecipe = (request, response) =>{
       respondJSON(request, response, 204, null, null);
     } else {
         //split steps and ingredients on new lines so the data is easier to format
-        const ingredients = recipe.Ingredients.split("/");
-        const steps = recipe.Steps.split("/");
+        const ingredients = recipe.Ingredients.split("\n");
+        const steps = recipe.Steps.split("\n");
       recipes[recipe.Name] = { Name: recipe.Name, Ingredients: ingredients, Steps: steps};
       respondJSON(request, response, 201, 'application/json', {
         message: 'Created Successfully',
@@ -105,7 +97,6 @@ module.exports = {
   addRecipe,
   getRandomRecipe,
   getAllRecipes,
-  getAllRecipesByTag,
   getMissing,
   getIndex,
   getCSS

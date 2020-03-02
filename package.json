@@ -9,9 +9,9 @@
     "posttest": "echo \"Tests complete\""
   },
   "engines": {
-    "npm":"6.12.1",
-    "node":"12.13.1"
-},
+    "npm": "6.12.1",
+    "node": "12.13.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sgm4689/http-api-assignment.git"
@@ -26,5 +26,7 @@
   "bugs": {
     "url": "https://github.com/sgm4689/RecipeViewer"
   },
-  "homepage": "https://github.com/sgm4689/RecipeViewer#readme"
+  "homepage": "https://github.com/sgm4689/RecipeViewer#readme",
+  "dependencies": {
+  }
 }
